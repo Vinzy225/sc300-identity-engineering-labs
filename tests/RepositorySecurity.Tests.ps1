@@ -1,5 +1,7 @@
 Describe 'SC-300 repository safety and structure' {
-  $root = Split-Path $PSScriptRoot -Parent
+  BeforeAll {
+    $root = Split-Path $PSScriptRoot -Parent
+    }
   It 'Has an explicit gitignore for confidential local files' {
     Test-Path (Join-Path $root '.gitignore') | Should -BeTrue
     (Get-Content (Join-Path $root '.gitignore') -Raw) | Should -Match 'local-only/'
