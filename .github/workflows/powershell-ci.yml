@@ -1,0 +1,33 @@
+name: PowerShell lint and tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  safe-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install testing modules
+        shell: pwsh
+        run: |
+          Install-Module Pester,PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+      - name: Parse scripts and lint
+        shell: pwsh
+        run: |
+          $errors = @()
+          Get-ChildItem ./scripts -Filter *.ps1 | ForEach-Object {
+            $tokens = $null; $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$parseErrors) | Out-Null
+            if ($parseErrors) { $errors += $parseErrors }
+          }
+          if ($errors.Count) { $errors | Out-String | Write-Error; exit 1 }
+          $findings = @(Invoke-ScriptAnalyzer -Path ./scripts -Recurse -Severity Error)
+          if ($findings.Count -gt 0) { $findings | Format-Table | Out-String | Write-Host; exit 1 }
+      - name: Run offline Pester tests
+        shell: pwsh
+        run: |
+          $result = Invoke-Pester -Path ./tests -PassThru -Output Detailed
+          if ($result.FailedCount -gt 0) { exit 1 }
+# No tenant connectivity: it is intentionally impossible for a public PR to deploy.

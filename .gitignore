@@ -1,0 +1,19 @@
+# Private tenant data, identifiers and sensitive artifacts
+local-only/
+reports/raw/
+reports/*.json
+reports/*.csv
+*.pfx
+*.p12
+*.pem
+*.key
+*.cer
+*.crt
+.env
+.env.*
+*.secrets.*
+**/unredacted/**
+# Ignore user/workspace tools and personal metadata
+.vscode/
+.DS_Store
+Thumbs.db

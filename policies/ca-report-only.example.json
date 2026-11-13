@@ -1,0 +1,14 @@
+{
+  "_comment": "DESIGN TEMPLATE ONLY. Never POST this file without replacing placeholders securely at runtime.",
+  "displayName": "SC300-LAB-ReportOnly-MFA",
+  "state": "enabledForReportingButNotEnforced",
+  "conditions": {
+    "users": {
+      "includeGroups": ["<RUNTIME_PILOT_GROUP_ID>"],
+      "excludeUsers": ["<RUNTIME_EMERGENCY_USER_ID>"]
+    },
+    "applications": {"includeApplications": ["All"]},
+    "clientAppTypes": ["all"]
+  },
+  "grantControls": {"operator": "OR", "builtInControls": ["mfa"]}
+}
